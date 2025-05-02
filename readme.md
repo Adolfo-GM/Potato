@@ -1,5 +1,5 @@
 # .potato
-![Potato](potaton.png)
+<img src="potaton.png" height="150px">
 
 ## What is .potato?
 
