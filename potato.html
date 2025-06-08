@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🥔 Potato File Editor</title>
+  <style>
+    body {
+      font-family: monospace;
+      background: #111;
+      color: #eee;
+      padding: 2rem;
+    }
+    input, button, textarea {
+      margin: 0.5rem 0;
+      padding: 0.4rem;
+      font-family: monospace;
+      background: #222;
+      color: #eee;
+      border: 1px solid #444;
+      width: 100%;
+    }
+    button {
+      cursor: pointer;
+    }
+    .section {
+      margin-bottom: 2rem;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🥔 Potato File Editor</h1>
+
+  <div class="section">
+    <label>Potato File Name:</label>
+    <input type="text" id="filename" value="demo.potato">
+    <button onclick="createPotato()">Create / Load Potato</button>
+  </div>
+
+  <div class="section">
+    <h2>Bake Text Potato</h2>
+    <input type="number" id="textColumn" placeholder="Column">
+    <input type="text" id="textName" placeholder="Potato Name">
+    <textarea id="textContent" rows="3" placeholder="Potato Content"></textarea>
+    <button onclick="bakeText()">Bake Text</button>
+  </div>
+
+  <div class="section">
+    <h2>Bake Image Potato</h2>
+    <input type="number" id="imageColumn" placeholder="Column">
+    <input type="text" id="imageName" placeholder="Potato Name">
+    <input type="file" id="upload" accept="image/*">
+  </div>
+
+  <div class="section">
+    <h2>Mash Potato</h2>
+    <input type="number" id="mashColumn" placeholder="Column to mash">
+    <button onclick="mashPotato()">Mash</button>
+    <pre id="mashOutput"></pre>
+  </div>
+
+  <div class="section">
+    <h2>Save or Load</h2>
+    <button onclick="downloadPotato()">Download .potato</button>
+    <input type="file" id="loadFile" accept=".potato">
+    <button onclick="loadPotatoFile()">Load .potato</button>
+  </div>
+
+  <script src="potato.js"></script>
+  <script>
+    let potato;
+
+    function createPotato() {
+      const fileName = document.getElementById("filename").value;
+      potato = new Potato(fileName);
+      alert(`Potato '${fileName}' created.`);
+    }
+
+    function bakeText() {
+      if (!potato) return alert("Create a potato file first.");
+      const col = parseInt(document.getElementById("textColumn").value);
+      const name = document.getElementById("textName").value || "potato";
+      const content = document.getElementById("textContent").value;
+      if (isNaN(col) || content.trim() === "") return alert("Provide valid input.");
+      potato.bake(col, content, name);
+      alert("Text potato baked!");
+    }
+
+    document.getElementById("upload").addEventListener("change", async (e) => {
+      if (!potato) return alert("Create a potato file first.");
+      const file = e.target.files[0];
+      const col = parseInt(document.getElementById("imageColumn").value);
+      const name = document.getElementById("imageName").value || "imagePotato";
+      if (!file || isNaN(col)) return alert("Choose an image and valid column.");
+      await potato.bakeImage(col, file, name);
+      alert("Image potato baked!");
+    });
+
+    function mashPotato() {
+      if (!potato) return alert("Create a potato file first.");
+      const col = parseInt(document.getElementById("mashColumn").value);
+      if (isNaN(col)) return alert("Enter a valid column.");
+      const result = potato.mash(col, false);
+      document.getElementById("mashOutput").textContent = result || "No potato found.";
+    }
+
+    function downloadPotato() {
+      if (!potato) return alert("Create a potato file first.");
+      potato.download();
+    }
+
+    function loadPotatoFile() {
+      const fileInput = document.getElementById("loadFile");
+      const file = fileInput.files[0];
+      if (!file) return alert("Choose a .potato file.");
+      const reader = new FileReader();
+      reader.onload = () => {
+        const lines = reader.result.split(/\r?\n/).map(line => line + "\n");
+        const name = file.name;
+        potato = new Potato(name);
+        potato.lines = lines;
+        alert(`${name} loaded with ${lines.length} potatoes.`);
+      };
+      reader.readAsText(file);
+    }
+  </script>
+
+</body>
+</html>
