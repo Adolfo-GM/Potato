@@ -23,5 +23,5 @@ print(pt.mash(0))  # Output: This is some important text!
 
 ```
 
-to get the potato module download the `potato.py` file from the repository and place it in your project directory. You can then import the `Potato` class and use it to create, read, and manipulate `.potato` files!
+to get the potato module download the `potato.py` file from the repository and place it in your project directory. You can then import the `potato` class and use it to create, read, and manipulate `.potato` files!
 

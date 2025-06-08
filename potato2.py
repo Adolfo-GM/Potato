@@ -1,10 +1,12 @@
 import base64
 import time
+import os
+import tempfile
 
 class Potato:
     '''
     # Potato
-    The Potato file format created by Adolfo GM
+    The Potato file format created by Adolfo GM (version 2.0)
     '''
     def __init__(self, file_name: str):
         if not file_name.endswith(".potato"):
@@ -14,7 +16,10 @@ class Potato:
             open(self.file_name, "x", encoding="utf-8")
         except FileExistsError:
             pass
-        
+
+    def _generate_potato_line(self, location: int, content: str, potato_name: str, potato_type: str):
+        return f'<potato name="{potato_name}" column="{location}" potato_type="{potato_type}" timestamp="{time.time()}">{content}</potato>\n'
+
     def bake(self, location: int, content: str, potato_name: str = "potato", potato_type: str = "text"):
         """
         # Bake
@@ -25,19 +30,24 @@ class Potato:
         """
         if not isinstance(location, int) or location < 0:
             raise ValueError("Location must be a positive integer")
-            
+        new_line = self._generate_potato_line(location, content, potato_name, potato_type)
+        found = False
+        idx = -1
+        with tempfile.NamedTemporaryFile("w", delete=False, encoding="utf-8") as tmpfile, open(self.file_name, "r", encoding="utf-8") as original:
+            for idx, line in enumerate(original):
+                if idx == location:
+                    tmpfile.write(new_line)
+                    found = True
+                else:
+                    tmpfile.write(line)
+            if not found:
+                for _ in range(idx + 1, location):
+                    tmpfile.write("\n")
+                tmpfile.write(new_line)
+        os.replace(tmpfile.name, self.file_name)
         content_preview = content[:10] + "..." if len(content) > 10 else content
         print(f"Baking {potato_name} at column number {location} with content: {content_preview}")
         print(f"{potato_name} is baked and ready to eat!")
-
-        with open(self.file_name, "r+", encoding="utf-8") as f:
-            lines = f.readlines()
-            while len(lines) <= location:
-                lines.append("\n")
-            lines[location] = f'<potato name="{potato_name}" column="{location}" potato_type="{potato_type}" timestamp="{time.time()}">{content}</potato>\n'
-            f.seek(0)
-            f.writelines(lines)
-            f.truncate()
 
     def mash(self, column: int, delete: bool = False):
         """
@@ -48,21 +58,23 @@ class Potato:
         """
         if not isinstance(column, int) or column < 0:
             raise ValueError("Column must be a positive integer")
-
-        with open(self.file_name, "r+", encoding="utf-8") as f:
-            lines = f.readlines()
-            for i, line in enumerate(lines):
-                if f'column="{column}"' in line:
-                    potato = line
+        mashed = None
+        with tempfile.NamedTemporaryFile("w", delete=False, encoding="utf-8") as tmpfile, open(self.file_name, "r", encoding="utf-8") as original:
+            for idx, line in enumerate(original):
+                if idx == column and f'column="{column}"' in line:
+                    mashed = line
                     if delete:
-                        lines[i] = "\n"
-                        f.seek(0)
-                        f.writelines(lines)
-                        f.truncate()
-                    return potato
-            print("No potato found at this column.")
-            return None
-        
+                        tmpfile.write("\n")
+                    else:
+                        tmpfile.write(line)
+                else:
+                    tmpfile.write(line)
+        os.replace(tmpfile.name, self.file_name)
+        if mashed:
+            return mashed
+        print("No potato found at this column.")
+        return None
+
     def bake_image(self, location: int, image_path: str, potato_name: str = "potato"):
         """
         # Bake Image
@@ -73,7 +85,6 @@ class Potato:
         """
         if not isinstance(location, int) or location < 0:
             raise ValueError("Location must be a positive integer")
-            
         try:
             with open(image_path, "rb") as img_file:
                 encoded_string = base64.b64encode(img_file.read()).decode('utf-8')

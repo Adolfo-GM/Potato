@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>.potato Project</title>
+    <style>
+        body {
+            background-color: #c0c0c0;
+            font-family: "Comic Sans MS", "Arial", sans-serif;
+            color: #000000;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #ff0000;
+            font-family: "Courier New", monospace; 
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .header img {
+            width: 100px; 
+            margin-right: 10px;
+        }
+        .container {
+            background-color: #ffffff;
+            border: 4px outset #808080;
+            width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .button {
+            background-color: #008000;
+            color: #ffffff;
+            border: 3px outset #00ff00;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            margin: 10px;
+        }
+        .button:active {
+            border: 3px inset #00ff00;
+        }
+        pre {
+            background-color: #f0f0f0;
+            border: 2px solid #000000;
+            padding: 10px;
+            text-align: left;
+            font-family: "Courier New", monospace;
+        }
+        a {
+            color: #0000ff;
+            text-decoration: underline;
+        }
+        a:visited {
+            color: #800080;
+        }
+        a:hover {
+            color: #ff0000;
+            background-color: #ffff00;
+        }
+        .repo-link {
+            color: #ff0000;
+            text-decoration: none;
+        }
+        .repo-link:visited {
+            color: #ff0000;
+        }
+        .repo-link:hover {
+            color: #ff0000;
+            background-color: #ffff00;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="potaton.png" alt="Potato Logo">
+            <h1>.potato Project</h1>
+        </div>
+        <h2>The Spud-tacular File Format!</h2>
+
+        <h3>What is .potato?</h3>
+        <p>
+            <b>.potato</b> is a simple, text-based file format created by Adolfo GM for storing various types of data, including text and base64 encoded images, in individual "potatoes" identified by a column number. Each potato is stored on a line within the file, enclosed in <code><potato></code> tags with attributes for name, column number, data type, and a timestamp.
+        </p>
+
+        <h3>Basic Usage</h3>
+        <p>
+            To start using the <b>.potato</b> format, you'll need the <code>Potato</code> class. Here's a quick example of how to create a <code>.potato</code> file and bake a potato into it:
+        </p>
+        <pre>
+from potato import Potato
+
+# Create a new .potato file (or open an existing one)
+pt = Potato("my_data.potato")
+
+# Bake a text potato at column 0
+pt.bake(0, "This is some important text!", "ImportantNote")
+
+# Access the potato
+print(pt.mash(0))  # Output: This is some important text!
+        </pre>
+
+        <h3>Get Started!</h3>
+        <p>
+            To get the <b>potato</b> module, download the <code>potato.py</code> file from the repository and place it in your project directory. You can then import the <code>Potato</code> class and use it to create, read, and manipulate <code>.potato</code> files!
+        </p>
+        <a href="potato.py" download class="button">Download potato.py</a>
+             <a href="potato2.py" download class="button">Download potato.py version 2.0</a>
+        <br>
+        <a href="https://github.com/Adolfo-GM/Potato" target="_blank" class="repo-link">Visit the GitHub Repository</a>
+
+        <p>Created by Adolfo GM</p>
+    </div>
+</body>
+</html>
